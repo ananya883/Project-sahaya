@@ -1,0 +1,2 @@
+Users in 'test' database:
+- ananyams2015@gmail.com (Roles: user, donor, volunteer)

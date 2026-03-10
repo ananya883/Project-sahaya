@@ -1,0 +1,55 @@
+name: sahaya_app
+description: A basic Flutter app for Sahaya project
+publish_to: 'none' # private app
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Networking
+  http: ^1.6.0
+  url_launcher: ^6.2.2
+
+  # Storage
+  shared_preferences: ^2.2.2
+
+  # Date formatting
+  intl: ^0.19.0
+
+  # Maps
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
+
+  # Location
+  geolocator: ^12.0.0
+  geocoding: ^3.0.0
+  permission_handler: ^11.3.0
+
+  # Image capture & file handling
+  image_picker: ^0.8.7+6
+  path: ^1.8.2
+
+  # Camera integration
+  camera: ^0.11.0+2
+  speech_to_text: ^7.3.0
+
+  # Icons
+  cupertino_icons: ^1.0.2
+
+  # 🔊 Text → Voice
+  flutter_tts: ^3.8.5
+  avatar_glow: ^2.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/

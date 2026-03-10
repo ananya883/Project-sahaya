@@ -1,0 +1,60 @@
+Connecting...
+Connected.
+Databases found:
+- sahaya
+- sample_mflix
+- test
+- admin
+- local
+
+DB: sahaya
+  - inventories: 4 docs
+  - matches: 5 docs
+  - campmanagers: 7 docs
+  - missingpeople: 7 docs
+  - unknownpeople: 6 docs
+  - sos: 15 docs
+  - disasters: 6 docs
+  - preusers: 7 docs
+  - users: 11 docs
+    Sample email: kalyaniamma@gmail.com
+  - notifications: 17 docs
+  - camprequests: 5 docs
+  - moneydonations: 5 docs
+  - itemdonations: 0 docs
+  - earlywarnings: 0 docs
+  - campinmates: 5 docs
+  - donations: 0 docs
+  - matchresults: 0 docs
+  - donationrecords: 9 docs
+
+DB: sample_mflix
+  - comments: 41079 docs
+  - movies: 21349 docs
+  - theaters: 1564 docs
+  - embedded_movies: 3483 docs
+  - users: 185 docs
+    Sample email: sean_bean@gameofthron.es
+  - sessions: 1 docs
+
+DB: test
+  - campinmates: 0 docs
+  - camprequests: 0 docs
+  - notifications: 0 docs
+  - users: 1 docs
+    Sample email: ananyams2015@gmail.com
+  - missingpeople: 0 docs
+  - sos: 0 docs
+  - inventories: 0 docs
+  - campmanagers: 0 docs
+  - unknownpeople: 0 docs
+  - preusers: 2 docs
+  - disasters: 0 docs
+  - matches: 0 docs
+  - donationrecords: 0 docs
+  - moneydonations: 0 docs
+
+DB: admin
+
+DB: local
+  - oplog.rs: 82 docs
