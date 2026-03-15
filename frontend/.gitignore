@@ -43,3 +43,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+
+
+node_modules/
+backend/node_modules/
+.env
+build/
+dist/
