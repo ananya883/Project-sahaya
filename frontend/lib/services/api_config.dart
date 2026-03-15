@@ -11,7 +11,7 @@ class ApiConfig {
   //
   // Current network IP: 10.6.2.93
 
-  static const String baseUrl = 'http://10.2.100.211:5000'; // For desktop/web testing
+  static const String baseUrl = 'http://192.168.247.138:5000'; // For desktop/web testing
   // static const String baseUrl = 'http://10.6.2.93:5000'; // For mobile testing
   
   // New Endpoints
@@ -34,6 +34,8 @@ class ApiConfig {
   static const String inmates = '$baseUrl/api/inmates';
 
   static const String donorDonateDirect = '$baseUrl/api/donor/donate-money';
+  static const String createRazorpayOrder = '$baseUrl/api/donor/create-razorpay-order';
+  static const String verifyRazorpayPayment = '$baseUrl/api/donor/verify-razorpay-payment';
 
   // Helper method to get disaster endpoint with ID
   static String adminDisaster(String disasterId) => '$baseUrl/api/admin/disaster/$disasterId';
@@ -43,4 +45,7 @@ class ApiConfig {
 
   // Helper method to get donation not-receive endpoint
   static String donationNotReceive(String donationId) => '$baseUrl/api/campmanager/donations/$donationId/not-receive';
+
+  // Helper method for donor history
+  static String donorHistory(String donorId, String donorName) => '$baseUrl/api/donor/history/$donorId/${Uri.encodeComponent(donorName)}';
 }

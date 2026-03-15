@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'donate_money.dart';
+import 'donation_history.dart';
 import '../services/api_service.dart';
 
 const Color primaryColor = Color(0xFF1E88E5);
@@ -463,7 +464,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                            const DonateMoneyPage(),
+                            DonateMoneyPage(campId: selectedCampId),
                           ),
                         );
                       },
@@ -479,6 +480,37 @@ class _DonorDashboardState extends State<DonorDashboard> {
                         style: TextStyle(
                           fontSize: 16,
                           color: primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // MY DONATIONS / HISTORY
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DonationHistoryPage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        "My Donations (History)",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
                         ),
                       ),
                     ),
