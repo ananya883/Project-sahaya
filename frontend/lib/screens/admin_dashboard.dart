@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import '../services/admin_session.dart';
 import 'admin_create_camp.dart';
+import 'admin_camp_details.dart';
 import 'admin_disaster_list.dart';
 import 'admin_volunteer_sos.dart';
 import 'admin_donation_reports.dart';
@@ -23,6 +25,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
   List<Map<String, dynamic>> users = [];
   bool isLoading = true;
   bool isLoadingUsers = true;
+
+  String _campSearchQuery = '';
+  String _userSearchQuery = '';
+  String _selectedRoleFilter = 'All';
 
   @override
   void initState() {
@@ -161,6 +167,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
         ),
         actions: [
+          if (camp['contactNumber'] != null && camp['contactNumber'].toString().isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.phone, color: Colors.green),
+              tooltip: "Call Manager",
+              onPressed: () => launchUrl(Uri.parse('tel:${camp['contactNumber']}')),
+            ),
+          if (camp['email'] != null && camp['email'].toString().isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.email, color: Colors.blue),
+              tooltip: "Email Manager",
+              onPressed: () => launchUrl(Uri.parse('mailto:${camp['email']}')),
+            ),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("Close"),
@@ -460,33 +478,40 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ),
             ),
 
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: Row(
-                children: [
-                  Text(
-                    'Registered Camps',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Search Camps by Name or Location',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                ),
+                onChanged: (value) => setState(() => _campSearchQuery = value.toLowerCase()),
               ),
             ),
 
-            camps.isEmpty
-                ? const Padding(
-              padding: EdgeInsets.all(32),
-              child: Text('No camps registered yet'),
-            )
-                : ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: camps.length,
-              itemBuilder: (context, index) {
-                final camp = camps[index];
+            Builder(builder: (context) {
+              final filteredCamps = camps.where((c) {
+                final name = (c['campName'] ?? '').toLowerCase();
+                final loc = (c['location'] ?? '').toLowerCase();
+                return name.contains(_campSearchQuery) || loc.contains(_campSearchQuery);
+              }).toList();
+
+              if (filteredCamps.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.all(32),
+                  child: Text('No camps match your search'),
+                );
+              }
+
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: filteredCamps.length,
+                itemBuilder: (context, index) {
+                  final camp = filteredCamps[index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
                   child: ListTile(
@@ -514,12 +539,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     isThreeLine: true,
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      _showCredentialsDialog(camp);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => AdminCampDetails(camp: camp)),
+                      );
                     },
                   ),
                 );
               },
-            ),
+            );
+            }),
           ],
         ),
       ),
@@ -529,15 +558,71 @@ class _AdminDashboardState extends State<AdminDashboard> {
   Widget _buildUsersTab() {
     return isLoadingUsers
         ? const Center(child: CircularProgressIndicator())
-        : RefreshIndicator(
-      onRefresh: _loadUsers,
-      child: users.isEmpty
-          ? const Center(child: Text("No users registered yet"))
-          : ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          final user = users[index];
+        : Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 6,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Search Users',
+                          prefixIcon: const Icon(Icons.search),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                        onChanged: (value) => setState(() => _userSearchQuery = value.toLowerCase()),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 4,
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          labelText: 'Role',
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                        value: _selectedRoleFilter,
+                        items: ['All', 'Volunteer', 'Donor', 'User', 'Admin']
+                            .map((r) => DropdownMenuItem(value: r, child: Text(r)))
+                            .toList(),
+                        onChanged: (val) => setState(() => _selectedRoleFilter = val ?? 'All'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _loadUsers,
+                  child: Builder(builder: (context) {
+                    final filteredUsers = users.where((u) {
+                      final name = (u['Name'] ?? '').toLowerCase();
+                      final email = (u['email'] ?? '').toLowerCase();
+                      final mobile = (u['mobile'] ?? '').toLowerCase();
+                      final roles = (u['roles'] as List<dynamic>?)?.map((e) => e.toString().toLowerCase()).toList() ?? ['user'];
+                      
+                      final matchesSearch = name.contains(_userSearchQuery) || email.contains(_userSearchQuery) || mobile.contains(_userSearchQuery);
+                      final matchesRole = _selectedRoleFilter == 'All' || roles.contains(_selectedRoleFilter.toLowerCase());
+                      
+                      return matchesSearch && matchesRole;
+                    }).toList();
+
+                    return filteredUsers.isEmpty
+                        ? ListView(
+                            children: const [
+                              SizedBox(height: 50),
+                              Center(child: Text("No users match the specific filter")),
+                            ],
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: filteredUsers.length,
+                            itemBuilder: (context, index) {
+                              final user = filteredUsers[index];
           final List<dynamic> roles = user['roles'] ?? ['user'];
           
           return Card(
@@ -585,8 +670,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
             ),
           );
         },
-      ),
-    );
+      );
+      }),
+    ))]);
   }
 
   Color _getRoleColor(String role) {
@@ -621,6 +707,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
         ),
         actions: [
+          if (user['mobile'] != null && user['mobile'].toString().isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.phone, color: Colors.green),
+              tooltip: "Call",
+              onPressed: () => launchUrl(Uri.parse('tel:${user['mobile']}')),
+            ),
+          if (user['email'] != null && user['email'].toString().isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.email, color: Colors.blue),
+              tooltip: "Email",
+              onPressed: () => launchUrl(Uri.parse('mailto:${user['email']}')),
+            ),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("Close"),
