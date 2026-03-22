@@ -52,3 +52,9 @@ backend/node_modules/
 .env
 build/
 dist/
+
+
+
+
+backend/serviceAccountKey.json
+backend/.env
