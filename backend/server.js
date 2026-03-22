@@ -19,6 +19,7 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import donorRoutes from "./routes/donorRoutes.js";
 import inmateRoutes from "./routes/inmateRoutes.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
+import alertRoutes from "./routes/alertRoutes.js";
 
 dotenv.config();
 
@@ -85,6 +86,9 @@ app.use("/api/inmates", inmateRoutes);
 
 // Inventory
 app.use("/api/inventory", inventoryRoutes);
+
+// Early Warning Alerts
+app.use("/api/alerts", alertRoutes);
 
 // ---------- DB & Server ----------
 const PORT = process.env.PORT || 5000;

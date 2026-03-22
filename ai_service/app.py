@@ -4,9 +4,58 @@ from PIL import Image
 import torch
 import numpy as np
 import os
+import requests
 from numpy.linalg import norm
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Import RF Model Class
+try:
+    from predict_rf_alert import RFDisasterAlertSystem
+except ImportError:
+    RFDisasterAlertSystem = None
 
 app = Flask(__name__)
+
+# -----------------------------
+# Initialize Disaster ML System
+# -----------------------------
+# Find the .env file relative to this script's location (/backend/.env)
+base_dir = Path(__file__).resolve().parent.parent
+env_path = base_dir / "backend" / ".env"
+
+OPENWEATHER_API_KEY = None
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
+    OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
+
+try:
+    if RFDisasterAlertSystem is not None:
+        alert_system = RFDisasterAlertSystem()
+    else:
+        alert_system = None
+except Exception as e:
+    print(f"Failed to load RF Model: {e}")
+    alert_system = None
+
+def get_current_weather(lat, lon, name):
+    if not OPENWEATHER_API_KEY:
+        return None
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={OPENWEATHER_API_KEY}&units=metric"
+    try:
+        response = requests.get(url, timeout=5)
+        data = response.json()
+        if response.status_code == 200 and "main" in data:
+            return {
+                "location": name,
+                "temperature": data["main"]["temp"],
+                "humidity": data["main"]["humidity"],
+                "windspeed": data["wind"]["speed"],
+                "rainfall": data.get("rain", {}).get("1h", 0)
+            }
+    except Exception:
+        pass
+    return None
 
 # -----------------------------
 # Load Face Detection & FaceNet
@@ -139,6 +188,57 @@ def match():
         print(f"❌ [AI] Match error: {e}", flush=True)
         return jsonify({"error": str(e)}), 500
 
+
+# -----------------------------
+# API: Predict Disaster Alerts
+# -----------------------------
+@app.route('/predict-alerts', methods=['POST'])
+def predict_alerts():
+    if not alert_system or alert_system.model is None:
+        return jsonify({"error": "ML Model not loaded"}), 500
+    
+    data = request.get_json()
+    if not data or 'locations' not in data:
+        return jsonify({"error": "No locations provided"}), 400
+        
+    requested_locations = data['locations']
+    
+    # Pre-defined known locations library
+    KNOWN_LOCATIONS = {
+        "Vannappuram": (9.90, 76.80),
+        "Adimali": (10.02, 76.97),
+        "Cheruthoni": (9.85, 76.98),
+        "Kokkayar": (9.57, 76.85),
+        "Sulthan Bathery": (11.67, 76.27),
+        "Meppadi": (11.55, 76.13),
+        "Kalpetta": (11.61, 76.08),
+        "Munnar": (10.09, 77.06),
+        "Vythiri": (11.55, 76.04),
+        "Mananthavady": (11.80, 76.00)
+    }
+    
+    predictions = []
+    
+    for loc in requested_locations:
+        if loc in KNOWN_LOCATIONS:
+            lat, lon = KNOWN_LOCATIONS[loc]
+            weather_data = get_current_weather(lat, lon, loc)
+            
+            if weather_data:
+                result = alert_system.predict_alert(
+                    rainfall=weather_data['rainfall'],
+                    humidity=weather_data['humidity'],
+                    windspeed=weather_data['windspeed'],
+                    temperature=weather_data['temperature']
+                )
+                if result.get("status") != "FAILED":
+                    predictions.append({
+                        "location": loc,
+                        "data": weather_data,
+                        "prediction": result
+                    })
+                    
+    return jsonify({"alerts": predictions})
 
 # -----------------------------
 # Run Server

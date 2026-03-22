@@ -5,90 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70133d08-a7f3-4f26-a00b-1ea8840260ef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/LICENCE.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/api.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/oAuthTokenClient.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/oAuthTokenClient.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/razorpay.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/razorpay.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/accounts.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/addons.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/cards.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/customers.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/disputes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/documents.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/fundAccount.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/iins.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/invoices.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/items.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/oAuthTokenValidator.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/orders.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/paymentLink.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/payments.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/plans.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/products.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/qrCode.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/refunds.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/settlements.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/stakeholders.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/subscriptions.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/tokens.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/transfers.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/virtualAccounts.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/resources/webhooks.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/accounts.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/addons.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/api.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/cards.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/customers.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/disputes.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/documents.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/fundAccount.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/iins.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/invoices.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/items.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/orders.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/paymentLink.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/payments.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/plans.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/products.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/qrCode.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/refunds.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/settlements.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/stakeholders.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/subscriptions.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/tokens.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/transfers.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/virtualAccounts.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/types/webhooks.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/utils/nodeify.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/utils/nodeify.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/utils/predefined-tests.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/utils/razorpay-utils.d.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/dist/utils/razorpay-utils.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/node_modules/razorpay/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/lib/screens/donation_history.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sahaya.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sahaya.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.env" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routes/donorRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/donorRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/screens/donate_money.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/screens/donate_money.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/screens/donor_dashboard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/screens/donor_dashboard.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/screens/first_aid_voice_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/screens/first_aid_voice_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/services/api_config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/services/api_config.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/services/api_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/services/api_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/services/rasa_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/services/rasa_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/linux/flutter/generated_plugins.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +44,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "feature/razorpay",
+    "git-widget-placeholder": "feature/earlywarning",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/ASUS/sahaya",
     "settings.editor.selected.configurable": "AndroidSdkUpdater",
@@ -132,6 +56,7 @@
       <recent name="C:\Users\ASUS\OneDrive\Desktop\sahaya\frontend\assets\images" />
     </key>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="70133d08-a7f3-4f26-a00b-1ea8840260ef" name="Changes" comment="" />

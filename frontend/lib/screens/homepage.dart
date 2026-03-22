@@ -11,6 +11,9 @@ import 'register_missing_person.dart';
 import 'sos_page.dart';
 import 'first_aid_voice_page.dart';
 import 'unknown.dart';
+import 'early_warning.dart';
+import '../services/alert_service.dart';
+import '../widgets/top_alert_notification.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,11 +30,36 @@ class _HomePageState extends State<HomePage> {
   List notifications = [];
   bool notificationLoading = true;
 
+  // Early Warning state
+  bool showAlertBanner = false;
+  int activeAlertCount = 0;
+
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
     _loadNotifications();
+    _checkForAlerts();
+  }
+
+  // ===================== EARLY WARNING ALERTS =====================
+  Future<void> _checkForAlerts() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+    if (userId == null) return;
+    
+    // Check if the user has active alerts for their subscribed locations
+    final alerts = await AlertService.getMyAlerts(userId);
+    if (!mounted) return;
+    
+    // In new backend, `alerts` returns ALL subscribed locations' weather
+    if (alerts.isNotEmpty) {
+      int dangerCount = alerts.where((a) => a['prediction'] != null && a['prediction']['alert_level'] > 0).length;
+      setState(() {
+        activeAlertCount = dangerCount;
+        showAlertBanner = true;
+      });
+    }
   }
 
   // ===================== LOCATION =====================
@@ -226,6 +254,21 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
 
+              if (showAlertBanner) ...[
+                const SizedBox(height: 10),
+                TopAlertNotification(
+                  activeAlertCount: activeAlertCount,
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const EarlyWarningPage()));
+                  },
+                  onDismiss: () {
+                    setState(() {
+                      showAlertBanner = false;
+                    });
+                  },
+                ),
+              ],
+
               const SizedBox(height: 10),
 
               // -------- Top Bar --------
@@ -351,12 +394,26 @@ class _HomePageState extends State<HomePage> {
                       Positioned(
                         bottom: 12,
                         right: 12,
-                        child: FloatingActionButton(
-                          mini: true,
-                          backgroundColor: Colors.blueAccent,
-                          onPressed: _recenterMap,
-                          child: const Icon(Icons.my_location,
-                              color: Colors.white),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            FloatingActionButton.extended(
+                              heroTag: "btn_alerts",
+                              backgroundColor: Colors.redAccent,
+                              icon: const Icon(Icons.warning_amber_rounded, color: Colors.white),
+                              label: const Text("Subscribe to Alerts", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EarlyWarningPage())),
+                            ),
+                            const SizedBox(height: 10),
+                            FloatingActionButton(
+                              heroTag: "btn_recenter",
+                              mini: true,
+                              backgroundColor: Colors.blueAccent,
+                              onPressed: _recenterMap,
+                              child: const Icon(Icons.my_location, color: Colors.white),
+                            ),
+                          ],
                         ),
                       ),
                     ],
