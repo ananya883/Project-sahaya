@@ -11,7 +11,7 @@ class ApiConfig {
   //
   // Current network IP: 10.6.2.93
 
-  static const String baseUrl = 'http://192.168.232.152:5000'; // Updated to current local IP
+  static const String baseUrl = 'http://10.112.234.138:5000'; // Updated to current local IP
   // static const String baseUrl = 'http://10.6.2.93:5000'; // For mobile testing
   
   // New Endpoints
@@ -59,4 +59,8 @@ class ApiConfig {
 
   // Helper method for donor history
   static String donorHistory(String donorId, String donorName) => '$baseUrl/api/donor/history/$donorId/${Uri.encodeComponent(donorName)}';
+
+  // Helper methods for Admin detailed camp view
+  static String inventoryByCamp(String campId) => '$baseUrl/api/inventory/$campId';
+  static String inmatesByCamp(String campId) => '$baseUrl/api/inmates/$campId';
 }
