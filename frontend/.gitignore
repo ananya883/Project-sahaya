@@ -60,3 +60,6 @@ dist/
 .idea/
 build/
 .dart_tool/
+
+backend/serviceAccountKey.json
+backend/.env
