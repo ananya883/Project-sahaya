@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'donate_money.dart';
+import 'donate_money.dart';
+import 'donation_history.dart';
+import 'public_notices_page.dart';
 import '../services/api_service.dart';
 
 const Color primaryColor = Color(0xFF1E88E5);
@@ -36,6 +40,7 @@ class DonorDashboard extends StatefulWidget {
 
 class _DonorDashboardState extends State<DonorDashboard> {
   String? selectedCampId; // null = "All Camps"
+  String _donorName = "Anonymous"; // Loaded from session
 
   List<Map<String, dynamic>> camps = [];
   List<Map<String, dynamic>> allRequests = [];
@@ -47,8 +52,17 @@ class _DonorDashboardState extends State<DonorDashboard> {
   @override
   void initState() {
     super.initState();
+    _loadDonorName();
     fetchCamps();
     fetchRequests();
+  }
+
+  Future<void> _loadDonorName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString('userName');
+    if (name != null && name.isNotEmpty) {
+      setState(() => _donorName = name);
+    }
   }
 
   Future<void> fetchCamps() async {
@@ -194,7 +208,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
 
                 // Call API
                 try {
-                  await ApiService.donateItem(request["id"], qty);
+                  await ApiService.donateItem(request["id"], qty, _donorName);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Donation successful! Thank you.")),
                   );
@@ -218,28 +232,43 @@ class _DonorDashboardState extends State<DonorDashboard> {
 
   // ---------------- HEADER ----------------
   Widget buildHeader() {
-    return ClipPath(
-      clipper: CustomHeaderClipper(),
-      child: Container(
-        height: headerHeight,
-        color: primaryColor,
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.volunteer_activism, color: Colors.white, size: 50),
-            SizedBox(height: 10),
-            Text(
-              "Donate Now",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+    return Stack(
+      children: [
+        ClipPath(
+          clipper: CustomHeaderClipper(),
+          child: Container(
+            height: headerHeight,
+            color: primaryColor,
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.volunteer_activism, color: Colors.white, size: 50),
+                SizedBox(height: 10),
+                Text(
+                  "Donate Now",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+        Positioned(
+          top: 40,
+          right: 16,
+          child: IconButton(
+            icon: const Icon(Icons.notifications_active, color: Colors.white, size: 28),
+            tooltip: "Public Notices",
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const PublicNoticesPage()));
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -463,7 +492,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                            const DonateMoneyPage(),
+                            DonateMoneyPage(campId: selectedCampId),
                           ),
                         );
                       },
@@ -479,6 +508,37 @@ class _DonorDashboardState extends State<DonorDashboard> {
                         style: TextStyle(
                           fontSize: 16,
                           color: primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // MY DONATIONS / HISTORY
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DonationHistoryPage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        "My Donations (History)",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
                         ),
                       ),
                     ),

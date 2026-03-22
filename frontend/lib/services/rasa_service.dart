@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RasaService {
-  static const String _baseUrl = 'http://10.2.100.211:5005';
+  static const String _baseUrl = 'http://10.112.234.138:5005';
 
   static Future<List<Map<String, dynamic>>> sendMessage(
       String message,

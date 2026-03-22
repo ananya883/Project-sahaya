@@ -216,7 +216,7 @@ class ApiService {
   }
 
   // ---------------- DONATE ITEM ----------------
-  static Future<void> donateItem(String requestId, int qty) async {
+  static Future<void> donateItem(String requestId, int qty, String donorName) async {
     try {
       final response = await http.post(
         Uri.parse("${ApiConfig.baseUrl}/api/donor/donate-item"),
@@ -224,6 +224,7 @@ class ApiService {
         body: jsonEncode({
           "requestId": requestId,
           "donateQty": qty,
+          "donorName": donorName,
         }),
       );
       if (response.statusCode != 200) {
@@ -251,18 +252,18 @@ class ApiService {
 
   // ---------------- DONATE MONEY ----------------
   static Future<http.Response> donateMoney({
-    required String donorName,
+    required String donorId,
+    required String campId,
     required String amount,
-    required String transactionId,
   }) async {
     final url = Uri.parse(ApiConfig.donorDonateDirect);
     return await http.post(
       url,
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
-        "donorName": donorName,
+        "donorId": donorId,
+        "campId": campId,
         "amount": amount,
-        "transactionId": transactionId,
       }),
     );
   }
@@ -285,6 +286,39 @@ class ApiService {
     );
   }
 
+  // ---------------- RAZORPAY ----------------
+  static Future<http.Response> createRazorpayOrder(String amount) async {
+    final url = Uri.parse(ApiConfig.createRazorpayOrder);
+    return await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"amount": amount}),
+    );
+  }
+
+  static Future<http.Response> verifyRazorpayPayment({
+    required String orderId,
+    required String paymentId,
+    required String signature,
+    required String donorId,
+    required String campId,
+    required String amount,
+  }) async {
+    final url = Uri.parse(ApiConfig.verifyRazorpayPayment);
+    return await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "razorpay_order_id": orderId,
+        "razorpay_payment_id": paymentId,
+        "razorpay_signature": signature,
+        "donorId": donorId,
+        "campId": campId,
+        "amount": amount,
+      }),
+    );
+  }
+
   // ---------------- VOLUNTEER SOS ----------------
   static Future<List<dynamic>> getVolunteerSos() async {
     try {
@@ -294,6 +328,21 @@ class ApiService {
         return jsonDecode(response.body);
       } else {
         throw Exception("Failed to load volunteer SOS requests");
+      }
+    } catch (e) {
+      throw Exception("Server error: $e");
+    }
+  }
+
+  // ---------------- DONOR HISTORY ----------------
+  static Future<Map<String, dynamic>> getDonationHistory(String donorId, String donorName) async {
+    try {
+      final response = await http.get(Uri.parse(ApiConfig.donorHistory(donorId, donorName)))
+          .timeout(const Duration(seconds: 15));
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception("Failed to load donation history");
       }
     } catch (e) {
       throw Exception("Server error: $e");

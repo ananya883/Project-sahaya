@@ -11,7 +11,7 @@ dependencies:
 
   # Networking
   http: ^1.6.0
-  url_launcher: ^6.2.2
+  url_launcher: ^6.3.2
 
   # Storage
   shared_preferences: ^2.2.2
@@ -42,6 +42,13 @@ dependencies:
   # 🔊 Text → Voice
   flutter_tts: ^3.8.5
   avatar_glow: ^2.0.2
+  razorpay_flutter: ^1.4.1
+  pdf: ^3.11.3
+  path_provider: ^2.1.5
+  open_file: ^3.5.11
+  excel: ^4.0.6
+  file_saver: ^0.3.1
+  file_picker: ^10.3.10
 
 dev_dependencies:
   flutter_test:

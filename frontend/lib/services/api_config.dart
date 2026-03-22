@@ -17,6 +17,7 @@ class ApiConfig {
   // New Endpoints
   static const String camps = '$baseUrl/api/camps/camps';
   static const String campRequests = '$baseUrl/api/camps/requests';
+  static const String publicNotices = '$baseUrl/api/public-notices';
 
   // API Endpoints
   static const String adminLogin = '$baseUrl/api/admin/login';
@@ -25,6 +26,8 @@ class ApiConfig {
   static const String adminCreateCamp = '$baseUrl/api/admin/create-camp';
   static const String adminRegisterDisaster = '$baseUrl/api/admin/register-disaster';
   static const String adminDisasters = '$baseUrl/api/admin/disasters';
+  static const String adminInventoryReport = '$baseUrl/api/admin/reports/inventory-donations';
+  static const String adminMoneyReport = '$baseUrl/api/admin/reports/money-donations';
 
   static const String campManagerLogin = '$baseUrl/api/campmanager/auth/login';
   static const String campManagerRegister = '$baseUrl/api/campmanager/auth/register';
@@ -34,6 +37,8 @@ class ApiConfig {
   static const String inmates = '$baseUrl/api/inmates';
 
   static const String donorDonateDirect = '$baseUrl/api/donor/donate-money';
+  static const String createRazorpayOrder = '$baseUrl/api/donor/create-razorpay-order';
+  static const String verifyRazorpayPayment = '$baseUrl/api/donor/verify-razorpay-payment';
 
   // Helper method to get disaster endpoint with ID
   static String adminDisaster(String disasterId) => '$baseUrl/api/admin/disaster/$disasterId';
@@ -43,7 +48,6 @@ class ApiConfig {
 
   // Helper method to get donation not-receive endpoint
   static String donationNotReceive(String donationId) => '$baseUrl/api/campmanager/donations/$donationId/not-receive';
-  
   // Volunteer Endpoints
   static const String volunteerUpgrade = '$baseUrl/api/volunteer/upgrade';
   static const String volunteerSos = '$baseUrl/api/volunteer/sos';
@@ -52,4 +56,7 @@ class ApiConfig {
 
   static String adminExpireSos(String id) => '$baseUrl/api/admin/sos/$id/expire';
   static String adminUnexpireSos(String id) => '$baseUrl/api/admin/sos/$id/unexpire';
+
+  // Helper method for donor history
+  static String donorHistory(String donorId, String donorName) => '$baseUrl/api/donor/history/$donorId/${Uri.encodeComponent(donorName)}';
 }
