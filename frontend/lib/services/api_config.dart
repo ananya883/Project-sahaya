@@ -11,7 +11,9 @@ class ApiConfig {
   //
   // Current network IP: 10.6.2.93
 
-  static const String baseUrl = 'http://10.112.234.138:5000'; // Updated to current local IP
+  static const String baseUrl = 'http://10.112.234.38:5000'; // For desktop/web testing
+
+
   // static const String baseUrl = 'http://10.6.2.93:5000'; // For mobile testing
   
   // New Endpoints

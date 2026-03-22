@@ -9,6 +9,7 @@ import 'screens/role_selection.dart';
 import 'screens/camp_manager_login.dart';
 import 'screens/admin_login.dart';
 import 'screens/donor_dashboard.dart';
+import 'screens/early_warning.dart';
 
 void main() {
   runApp(const MyApp());
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         '/camp_manager_login': (context) => const CampManagerLoginPage(),
         '/admin_login': (context) => const AdminLoginPage(),
         '/donor_dashboard': (context) => const DonorDashboard(),
+        '/early_warning': (context) => const EarlyWarningPage(),
       },
     );
   }

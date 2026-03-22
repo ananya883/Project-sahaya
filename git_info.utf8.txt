@@ -1,0 +1,51 @@
+STATUS
+On branch feature/earlywarning
+Your branch is up to date with 'origin/feature/earlywarning'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   .idea/caches/deviceStreaming.xml
+	modified:   .idea/sahaya.iml
+	modified:   .idea/workspace.xml
+	modified:   frontend/lib/screens/first_aid_voice_page.dart
+	modified:   frontend/lib/services/api_config.dart
+	modified:   frontend/lib/services/rasa_service.dart
+	modified:   frontend/macos/Flutter/GeneratedPluginRegistrant.swift
+	modified:   frontend/pubspec.lock
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	dump_git.py
+	git_branch.txt
+	git_info.utf8.txt
+	git_log.txt
+	git_reflog.txt
+	git_stash.txt
+	git_status.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+BRANCHES
+* feature/earlywarning 9fd1d23 Removed sensitive data and cleaned commit
+  main                 78f9155 Merge pull request #1 from ananya883/feature/razorpay
+LOG
+9fd1d23 Removed sensitive data and cleaned commit
+78f9155 Merge pull request #1 from ananya883/feature/razorpay
+00b9c6c  added razorpay
+78fb09f Initial commit - Sahaya project
+STASH
+
+REFLOG
+9fd1d23 HEAD@{0}: rebase (finish): returning to refs/heads/feature/earlywarning
+9fd1d23 HEAD@{1}: rebase (pick): Removed sensitive data and cleaned commit
+78f9155 HEAD@{2}: rebase (start): checkout HEAD~2
+963ab94 HEAD@{3}: commit: Removed sensitive data and cleaned commit
+6621b87 HEAD@{4}: reset: moving to HEAD~1
+c411609 HEAD@{5}: commit: Clean commit without secrets
+6621b87 HEAD@{6}: reset: moving to HEAD~1
+7703382 HEAD@{7}: commit: Clean commit without secrets
+6621b87 HEAD@{8}: reset: moving to HEAD~1
+6bbb6ea HEAD@{9}: commit: Removed sensitive files
+6621b87 HEAD@{10}: commit: Added early warning system
+78f9155 HEAD@{11}: checkout: moving from main to feature/earlywarning
+78f9155 HEAD@{12}: clone: from https://github.com/ananya883/Project-sahaya.git
