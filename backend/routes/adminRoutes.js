@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/users.js";
 import CampManager from "../models/CampManager.js";
 import Disaster from "../models/Disaster.js";
+import SOS from "../models/sos.js";
 import DonationRecord from "../models/DonationRecord.js";
 import MoneyDonation from "../models/MoneyDonation.js";
 import { sendCampCredentials } from "../services/emailService.js";
@@ -321,6 +322,42 @@ router.delete("/disaster/:disasterId", async (req, res) => {
     } catch (error) {
         console.error("Delete disaster error:", error);
         res.status(500).json({ message: "Failed to delete disaster" });
+    }
+});
+
+// Mark SOS as expired manually (admin only)
+router.post("/sos/:id/expire", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const sos = await SOS.findById(id);
+        if (!sos) return res.status(404).json({ message: "SOS not found" });
+
+        sos.isManualExpired = true;
+        sos.isManualUnexpired = false;
+        await sos.save();
+
+        res.json({ message: "SOS marked as expired", sos });
+    } catch (error) {
+        console.error("SOS expiration error:", error);
+        res.status(500).json({ message: "Failed to mark SOS as expired" });
+    }
+});
+
+// Undo SOS expiration manually (admin only)
+router.post("/sos/:id/unexpire", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const sos = await SOS.findById(id);
+        if (!sos) return res.status(404).json({ message: "SOS not found" });
+
+        sos.isManualExpired = false;
+        sos.isManualUnexpired = true;
+        await sos.save();
+
+        res.json({ message: "SOS expiration undone", sos });
+    } catch (error) {
+        console.error("SOS unexpiration error:", error);
+        res.status(500).json({ message: "Failed to undo SOS expiration" });
     }
 });
 
