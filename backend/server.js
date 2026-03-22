@@ -13,6 +13,7 @@ import notificationRoutes from "./routes/notification.routes.js";
 import unknownRoutes from "./routes/unknown.routes.js";
 import campRoutes from "./routes/campRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import publicNoticeRoutes from "./routes/publicNoticeRoutes.js";
 import campManagerAuthRoutes from "./routes/campManagerAuthRoutes.js";
 import campManagerRoutes from "./routes/campManagerRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
@@ -61,6 +62,7 @@ app.use("/api/match", matchRoutes);
 
 // Notifications
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/public-notices", publicNoticeRoutes);
 
 // Camps
 app.use("/api/camps", campRoutes);

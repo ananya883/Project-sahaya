@@ -211,7 +211,7 @@ class ApiService {
   }
 
   // ---------------- DONATE ITEM ----------------
-  static Future<void> donateItem(String requestId, int qty) async {
+  static Future<void> donateItem(String requestId, int qty, String donorName) async {
     try {
       final response = await http.post(
         Uri.parse("${ApiConfig.baseUrl}/api/donor/donate-item"),
@@ -219,6 +219,7 @@ class ApiService {
         body: jsonEncode({
           "requestId": requestId,
           "donateQty": qty,
+          "donorName": donorName,
         }),
       );
       if (response.statusCode != 200) {

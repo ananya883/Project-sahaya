@@ -2,6 +2,8 @@ import express from "express";
 import User from "../models/users.js";
 import CampManager from "../models/CampManager.js";
 import Disaster from "../models/Disaster.js";
+import DonationRecord from "../models/DonationRecord.js";
+import MoneyDonation from "../models/MoneyDonation.js";
 import { sendCampCredentials } from "../services/emailService.js";
 
 const router = express.Router();
@@ -320,6 +322,103 @@ router.delete("/disaster/:disasterId", async (req, res) => {
         console.error("Delete disaster error:", error);
         res.status(500).json({ message: "Failed to delete disaster" });
     }
+});
+
+// ─────────────────────────────────────────
+// ADMIN DONATION REPORTS
+// ─────────────────────────────────────────
+
+// GET /api/admin/reports/inventory-donations
+router.get("/reports/inventory-donations", async (req, res) => {
+  try {
+    const records = await DonationRecord.find().sort({ donatedAt: -1 });
+
+    const result = await Promise.all(records.map(async (r) => {
+      // Resolve camp name
+      let campName = r.campId || "Unknown";
+      if (r.campId) {
+        const camp = await CampManager.findOne({ campId: r.campId });
+        if (camp) campName = camp.campName;
+      }
+
+      // Resolve donor mobile by matching name in Users
+      let donorMobile = "N/A";
+      let donorEmail = "N/A";
+      if (r.donorName && r.donorName !== "Anonymous Donor" && r.donorName !== "Anonymous") {
+        const user = await User.findOne({ Name: new RegExp("^" + r.donorName + "$", "i") });
+        if (user) {
+          donorMobile = user.mobile || "N/A";
+          donorEmail = user.email || "N/A";
+        }
+      }
+
+      return {
+        _id: r._id,
+        donorName: r.donorName || "Anonymous",
+        donorMobile,
+        donorEmail,
+        campName,
+        itemName: r.itemName,
+        quantity: r.quantity,
+        unit: r.unit,
+        status: r.status,
+        donatedAt: r.donatedAt,
+        receivedAt: r.receivedAt || null,
+      };
+    }));
+
+    res.json(result);
+  } catch (err) {
+    console.error("Inventory donations report error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/admin/reports/money-donations
+router.get("/reports/money-donations", async (req, res) => {
+  try {
+    const records = await MoneyDonation.find().sort({ donatedAt: -1 });
+
+    const result = await Promise.all(records.map(async (r) => {
+      // Resolve camp name
+      let campName = r.campId || "General";
+      if (r.campId && r.campId !== "General") {
+        const camp = await CampManager.findOne({ campId: r.campId });
+        if (camp) campName = camp.campName;
+      }
+
+      // Resolve donor name + mobile from User by _id (donorId)
+      let donorName = r.donorId || "Anonymous";
+      let donorMobile = "N/A";
+      let donorEmail = "N/A";
+      if (r.donorId && r.donorId !== "Anonymous") {
+        try {
+          const user = await User.findById(r.donorId);
+          if (user) {
+            donorName = user.Name || donorName;
+            donorMobile = user.mobile || "N/A";
+            donorEmail = user.email || "N/A";
+          }
+        } catch (_) { /* donorId may not be a valid ObjectId */ }
+      }
+
+      return {
+        _id: r._id,
+        donorName,
+        donorMobile,
+        donorEmail,
+        campName,
+        amount: r.amount,
+        paymentStatus: r.paymentStatus,
+        donatedAt: r.donatedAt,
+      };
+    }));
+
+    res.json(result);
+  } catch (err) {
+    console.error("Money donations report error:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 export default router;
