@@ -52,3 +52,11 @@ backend/node_modules/
 .env
 build/
 dist/
+
+
+
+* text=auto
+
+.idea/
+build/
+.dart_tool/

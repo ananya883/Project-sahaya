@@ -11,6 +11,7 @@ import 'register_missing_person.dart';
 import 'sos_page.dart';
 import 'first_aid_voice_page.dart';
 import 'unknown.dart';
+import 'public_notices_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -249,6 +250,16 @@ class _HomePageState extends State<HomePage> {
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.notifications_active, color: Colors.blueAccent, size: 28),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const PublicNoticesPage()),
+                      );
+                    },
                   ),
                 ],
               ),

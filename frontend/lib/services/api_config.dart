@@ -11,12 +11,13 @@ class ApiConfig {
   //
   // Current network IP: 10.6.2.93
 
-  static const String baseUrl = 'http://192.168.247.138:5000'; // For desktop/web testing
+  static const String baseUrl = 'http://10.112.234.138:5000'; // For desktop/web testing
   // static const String baseUrl = 'http://10.6.2.93:5000'; // For mobile testing
   
   // New Endpoints
   static const String camps = '$baseUrl/api/camps/camps';
   static const String campRequests = '$baseUrl/api/camps/requests';
+  static const String publicNotices = '$baseUrl/api/public-notices';
 
   // API Endpoints
   static const String adminLogin = '$baseUrl/api/admin/login';
@@ -25,6 +26,8 @@ class ApiConfig {
   static const String adminCreateCamp = '$baseUrl/api/admin/create-camp';
   static const String adminRegisterDisaster = '$baseUrl/api/admin/register-disaster';
   static const String adminDisasters = '$baseUrl/api/admin/disasters';
+  static const String adminInventoryReport = '$baseUrl/api/admin/reports/inventory-donations';
+  static const String adminMoneyReport = '$baseUrl/api/admin/reports/money-donations';
 
   static const String campManagerLogin = '$baseUrl/api/campmanager/auth/login';
   static const String campManagerRegister = '$baseUrl/api/campmanager/auth/register';
