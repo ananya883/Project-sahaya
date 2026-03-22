@@ -5,14 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70133d08-a7f3-4f26-a00b-1ea8840260ef" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sahaya.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sahaya.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/screens/first_aid_voice_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/screens/first_aid_voice_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/models/VolunteerTask.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/VolunteerTask.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/volunteerRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/volunteerRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/screens/admin_dashboard.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/screens/admin_dashboard.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/screens/admin_volunteer_sos.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/screens/admin_volunteer_sos.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/screens/volunteer_home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/screens/volunteer_home.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/lib/services/api_config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/services/api_config.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/services/rasa_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/services/rasa_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/services/api_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/services/api_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/linux/flutter/generated_plugins.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +50,7 @@
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "feature/earlywarning",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/ASUS/sahaya",
     "settings.editor.selected.configurable": "AndroidSdkUpdater",
