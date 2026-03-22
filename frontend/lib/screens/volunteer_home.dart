@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'login.dart';
+import 'volunteer_profile.dart';
 import '../services/api_service.dart';
 
 class VolunteerHome extends StatefulWidget {
@@ -18,6 +19,7 @@ class _VolunteerHomeState extends State<VolunteerHome> {
   List<dynamic> _sosRequests = [];
   bool _isLoading = true;
   String? _volunteerId;
+  int _selectedTab = 0; // 0 = Pending, 1 = My Tasks, 2 = Expired
 
   @override
   void initState() {
@@ -143,9 +145,9 @@ class _VolunteerHomeState extends State<VolunteerHome> {
   // --------- Open Google Maps for turn-by-turn navigation ---------
   Future<void> _openInGoogleMaps(double lat, double lng) async {
     final url = Uri.parse('https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving');
-    if (await canLaunchUrl(url)) {
+    try {
       await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Could not open Google Maps"), backgroundColor: Colors.red),
@@ -164,6 +166,11 @@ class _VolunteerHomeState extends State<VolunteerHome> {
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            tooltip: "Profile",
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const VolunteerProfile())),
+          ),
           IconButton(icon: const Icon(Icons.refresh), tooltip: "Refresh", onPressed: _loadData),
           IconButton(icon: const Icon(Icons.logout),  tooltip: "Logout",  onPressed: _logout),
         ],
@@ -193,26 +200,74 @@ class _VolunteerHomeState extends State<VolunteerHome> {
                   ),
                 ),
 
+                // Tabs / Filters
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ChoiceChip(
+                          label: const Text("Pending"),
+                          selected: _selectedTab == 0,
+                          onSelected: (val) { if (val) setState(() => _selectedTab = 0); },
+                          selectedColor: Colors.green.shade200,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ChoiceChip(
+                          label: const Text("My Tasks"),
+                          selected: _selectedTab == 1,
+                          onSelected: (val) { if (val) setState(() => _selectedTab = 1); },
+                          selectedColor: Colors.green.shade200,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ChoiceChip(
+                          label: const Text("Expired"),
+                          selected: _selectedTab == 2,
+                          onSelected: (val) { if (val) setState(() => _selectedTab = 2); },
+                          selectedColor: Colors.green.shade200,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 // SOS list
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: _loadData,
-                    child: _sosRequests.isEmpty
-                        ? const Center(
+                    child: Builder(
+                      builder: (context) {
+                        final filteredRequests = _sosRequests.where((sos) {
+                          final status = sos['status'] ?? 'pending';
+                          final isMyTask = sos['volunteer'] != null && sos['volunteer']['_id'] == _volunteerId;
+                          if (_selectedTab == 0) return status == 'pending';
+                          if (_selectedTab == 1) return isMyTask && status == 'in progress';
+                          if (_selectedTab == 2) return status == 'expired';
+                          return true;
+                        }).toList();
+
+                        if (filteredRequests.isEmpty) {
+                          return const Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.check_circle_outline, size: 60, color: Colors.green),
+                                Icon(Icons.inbox, size: 60, color: Colors.grey),
                                 SizedBox(height: 12),
-                                Text("No active SOS requests right now.", style: TextStyle(fontSize: 16)),
+                                Text("No requests match this filter.", style: TextStyle(fontSize: 16)),
                               ],
                             ),
-                          )
-                        : ListView.builder(
+                          );
+                        }
+
+                        return ListView.builder(
                             padding: const EdgeInsets.all(12),
-                            itemCount: _sosRequests.length,
+                            itemCount: filteredRequests.length,
                             itemBuilder: (context, index) {
-                              final sos      = _sosRequests[index];
+                              final sos      = filteredRequests[index];
                               final status   = sos['status'] ?? 'pending';
                               final isMyTask = sos['volunteer'] != null && sos['volunteer']['_id'] == _volunteerId;
                               final hasLocation = sos['latitude'] != null && sos['longitude'] != null;
@@ -383,7 +438,9 @@ class _VolunteerHomeState extends State<VolunteerHome> {
                                 ),
                               );
                             },
-                          ),
+                          );
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -439,8 +496,10 @@ class _SosMapScreen extends StatelessWidget {
   Future<void> _navigate() async {
     final url = Uri.parse(
         'https://www.google.com/maps/dir/?api=1&destination=${sosLocation.latitude},${sosLocation.longitude}&travelmode=driving');
-    if (await canLaunchUrl(url)) {
+    try {
       await launchUrl(url, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      debugPrint("Could not launch maps: $e");
     }
   }
 

@@ -8,6 +8,8 @@ const sosSchema = new mongoose.Schema({
   timestamp:      { type: Date, default: Date.now },
   image_url:      { type: String, default: '' },
   requestedBy:    { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  isManualExpired: { type: Boolean, default: false },
+  isManualUnexpired: { type: Boolean, default: false }
 });
 
 export default mongoose.model("SOS", sosSchema);

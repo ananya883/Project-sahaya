@@ -316,4 +316,20 @@ class ApiService {
       headers: {"Content-Type": "application/json"},
     );
   }
+
+  static Future<http.Response> adminExpireSos(String sosId) async {
+    final url = Uri.parse(ApiConfig.adminExpireSos(sosId));
+    return await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+    );
+  }
+
+  static Future<http.Response> adminUnexpireSos(String sosId) async {
+    final url = Uri.parse(ApiConfig.adminUnexpireSos(sosId));
+    return await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+    );
+  }
 }

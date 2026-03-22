@@ -41,6 +41,7 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
     switch (status) {
       case 'resolved':    return Colors.green;
       case 'in progress': return Colors.orange;
+      case 'expired':     return Colors.grey;
       default:            return Colors.red;
     }
   }
@@ -49,7 +50,34 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
     switch (status) {
       case 'resolved':    return Icons.check_circle;
       case 'in progress': return Icons.timelapse;
+      case 'expired':     return Icons.block;
       default:            return Icons.warning_amber_rounded;
+    }
+  }
+
+  Future<void> _expireSos(String sosId) async {
+    try {
+      final res = await ApiService.adminExpireSos(sosId);
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        _loadData();
+      } else {
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to expire")));
+      }
+    } catch (e) {
+      debugPrint("Expire error: $e");
+    }
+  }
+
+  Future<void> _unexpireSos(String sosId) async {
+    try {
+      final res = await ApiService.adminUnexpireSos(sosId);
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        _loadData();
+      } else {
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to unexpire")));
+      }
+    } catch (e) {
+      debugPrint("Unexpire error: $e");
     }
   }
 
@@ -58,6 +86,7 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
     final pending    = _sosRequests.where((s) => (s['status'] ?? 'pending') == 'pending').length;
     final inProgress = _sosRequests.where((s) => s['status'] == 'in progress').length;
     final resolved   = _sosRequests.where((s) => s['status'] == 'resolved').length;
+    final expired    = _sosRequests.where((s) => s['status'] == 'expired').length;
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -86,10 +115,12 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
                     child: Row(
                       children: [
                         _statChip("Pending", pending, Colors.red),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 8),
                         _statChip("In Progress", inProgress, Colors.orange),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 8),
                         _statChip("Resolved", resolved, Colors.green),
+                        const SizedBox(width: 8),
+                        _statChip("Expired", expired, Colors.grey),
                       ],
                     ),
                   ),
@@ -185,6 +216,30 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
                                             : 'Not assigned yet',
                                         color: volunteer != null ? Colors.green.shade700 : Colors.grey,
                                       ),
+
+                                      // Actions
+                                      if (status != 'resolved' && status != 'in progress') ...[
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            if (status != 'expired')
+                                              TextButton.icon(
+                                                onPressed: () => _expireSos(sos['_id']),
+                                                icon: const Icon(Icons.block, size: 16),
+                                                label: const Text("Mark Expired"),
+                                                style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                                              ),
+                                            if (status == 'expired')
+                                              TextButton.icon(
+                                                onPressed: () => _unexpireSos(sos['_id']),
+                                                icon: const Icon(Icons.restore, size: 16),
+                                                label: const Text("Undo Expired"),
+                                                style: TextButton.styleFrom(foregroundColor: Colors.blue),
+                                              ),
+                                          ],
+                                        )
+                                      ]
                                     ],
                                   ),
                                 ),

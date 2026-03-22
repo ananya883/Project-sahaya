@@ -16,10 +16,24 @@ router.get('/sos', async (req, res) => {
         // Merge tasks into SOS
         const result = sosList.map(sos => {
             const task = tasks.find(t => t.sosId.toString() === sos._id.toString());
+            
+            const timeDiffHours = (new Date() - new Date(sos.timestamp)) / (1000 * 60 * 60);
+            let isExpired = false;
+            if (sos.isManualExpired) isExpired = true;
+            else if (sos.isManualUnexpired) isExpired = false;
+            else if (timeDiffHours >= 36) isExpired = true;
+
+            let finalStatus = 'pending';
+            if (task) {
+                finalStatus = task.status;
+            } else if (isExpired) {
+                finalStatus = 'expired';
+            }
+
             return {
                 ...sos.toObject(),
                 task: task || null,
-                status: task ? task.status : 'pending',
+                status: finalStatus,
                 volunteer: task && task.volunteerId ? task.volunteerId : null
             };
         });
