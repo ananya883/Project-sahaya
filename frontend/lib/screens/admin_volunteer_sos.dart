@@ -11,6 +11,7 @@ class AdminVolunteerSos extends StatefulWidget {
 class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
   List<dynamic> _sosRequests = [];
   bool _isLoading = true;
+  String? _selectedFilter;
 
   @override
   void initState() {
@@ -114,13 +115,13 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
                     color: Colors.white,
                     child: Row(
                       children: [
-                        _statChip("Pending", pending, Colors.red),
+                        _statChip("Pending", pending, Colors.red, "pending"),
                         const SizedBox(width: 8),
-                        _statChip("In Progress", inProgress, Colors.orange),
+                        _statChip("In Progress", inProgress, Colors.orange, "in progress"),
                         const SizedBox(width: 8),
-                        _statChip("Resolved", resolved, Colors.green),
+                        _statChip("Resolved", resolved, Colors.green, "resolved"),
                         const SizedBox(width: 8),
-                        _statChip("Expired", expired, Colors.grey),
+                        _statChip("Expired", expired, Colors.grey, "expired"),
                       ],
                     ),
                   ),
@@ -128,121 +129,166 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
 
                   // List
                   Expanded(
-                    child: _sosRequests.isEmpty
-                        ? const Center(
+                    child: Builder(
+                      builder: (context) {
+                        final filteredRequests = _selectedFilter == null 
+                            ? _sosRequests 
+                            : _sosRequests.where((s) {
+                                final status = s['status'] ?? 'pending';
+                                final isExpired = s['isManualExpired'] == true || (s['isManualUnexpired'] != true && status == 'expired');
+                                if (_selectedFilter == 'expired') return isExpired;
+                                return status == _selectedFilter;
+                              }).toList();
+
+                        if (filteredRequests.isEmpty) {
+                          return Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.inbox, size: 60, color: Colors.grey),
-                                SizedBox(height: 12),
-                                Text("No SOS requests yet.", style: TextStyle(fontSize: 16, color: Colors.grey)),
+                                const Icon(Icons.inbox, size: 60, color: Colors.grey),
+                                const SizedBox(height: 12),
+                                Text(
+                                  _selectedFilter == null ? "No SOS requests yet." : "No ${_selectedFilter!} requests.",
+                                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                                ),
                               ],
                             ),
-                          )
-                        : ListView.builder(
-                            padding: const EdgeInsets.all(12),
-                            itemCount: _sosRequests.length,
-                            itemBuilder: (context, index) {
-                              final sos      = _sosRequests[index];
-                              final status   = sos['status'] ?? 'pending';
-                              final requester = sos['requestedBy'];
-                              final volunteer = sos['volunteer'];
+                          );
+                        }
 
-                              final time = sos['timestamp'] != null
-                                  ? _formatTime(sos['timestamp'].toString())
-                                  : 'N/A';
+                        final sortedRequests = List.from(filteredRequests);
+                        sortedRequests.sort((a, b) {
+                                String tA = (a['timestamp'] ?? a['createdAt'] ?? '').toString();
+                                String tB = (b['timestamp'] ?? b['createdAt'] ?? '').toString();
+                                return tB.compareTo(tA);
+                              });
 
-                              return Card(
-                                margin: const EdgeInsets.only(bottom: 12),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                elevation: 2,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(14),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      // Header
-                                      Row(
-                                        children: [
-                                          Icon(_statusIcon(status), color: _statusColor(status), size: 22),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              "${sos['emergency_type'] ?? 'Emergency'}"
-                                              "${(sos['disaster_type'] ?? '').isNotEmpty ? '  •  ${sos['disaster_type']}' : ''}",
-                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                            decoration: BoxDecoration(
-                                              color: _statusColor(status).withOpacity(0.12),
-                                              border: Border.all(color: _statusColor(status)),
-                                              borderRadius: BorderRadius.circular(20),
-                                            ),
-                                            child: Text(
-                                              status.toUpperCase(),
-                                              style: TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.bold,
-                                                color: _statusColor(status),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                              final Map<String, List<dynamic>> groupedTasks = {};
+                              for (var sos in sortedRequests) {
+                                String ts = (sos['timestamp'] ?? sos['createdAt'])?.toString() ?? '';
+                                String dateStr = _formatDate(ts);
+                                groupedTasks.putIfAbsent(dateStr, () => []).add(sos);
+                              }
+
+                              return ListView(
+                                padding: const EdgeInsets.all(12),
+                                children: groupedTasks.entries.expand((entry) {
+                                  return [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4, top: 12, bottom: 8),
+                                      child: Text(
+                                        entry.key,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red.shade800,
+                                        ),
                                       ),
-                                      const Divider(height: 18),
+                                    ),
+                                    ...entry.value.map((sos) {
+                                      final status   = sos['status'] ?? 'pending';
+                                      final requester = sos['requestedBy'];
+                                      final volunteer = sos['volunteer'];
 
-                                      // Requester
-                                      _infoRow(Icons.person_outline, "Requested by",
-                                          requester != null ? (requester['Name'] ?? 'Unknown') : 'Unknown'),
-                                      if (requester != null && requester['mobile'] != null)
-                                        _infoRow(Icons.phone_outlined, "Contact", requester['mobile']),
+                                      final time = sos['timestamp'] != null
+                                          ? _formatTime(sos['timestamp'].toString())
+                                          : 'N/A';
 
-                                      // Location
-                                      if (sos['latitude'] != null)
-                                        _infoRow(Icons.location_on_outlined, "Location",
-                                            "Lat: ${sos['latitude']}, Lng: ${sos['longitude']}"),
-
-                                      // Time
-                                      _infoRow(Icons.access_time, "Time", time),
-
-                                      // Volunteer
-                                      _infoRow(
-                                        Icons.volunteer_activism,
-                                        "Volunteer",
-                                        volunteer != null
-                                            ? "${volunteer['Name']} (${volunteer['mobile'] ?? 'N/A'})"
-                                            : 'Not assigned yet',
-                                        color: volunteer != null ? Colors.green.shade700 : Colors.grey,
-                                      ),
-
-                                      // Actions
-                                      if (status != 'resolved' && status != 'in progress') ...[
-                                        const SizedBox(height: 10),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            if (status != 'expired')
-                                              TextButton.icon(
-                                                onPressed: () => _expireSos(sos['_id']),
-                                                icon: const Icon(Icons.block, size: 16),
-                                                label: const Text("Mark Expired"),
-                                                style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                                      return Card(
+                                        margin: const EdgeInsets.only(bottom: 12),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                        elevation: 2,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(14),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              // Header
+                                              Row(
+                                                children: [
+                                                  Icon(_statusIcon(status), color: _statusColor(status), size: 22),
+                                                  const SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: Text(
+                                                      "${sos['emergency_type'] ?? 'Emergency'}"
+                                                      "${(sos['disaster_type'] ?? '').isNotEmpty ? '  •  ${sos['disaster_type']}' : ''}",
+                                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                                    decoration: BoxDecoration(
+                                                      color: _statusColor(status).withOpacity(0.12),
+                                                      border: Border.all(color: _statusColor(status)),
+                                                      borderRadius: BorderRadius.circular(20),
+                                                    ),
+                                                    child: Text(
+                                                      status.toUpperCase(),
+                                                      style: TextStyle(
+                                                        fontSize: 11,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: _statusColor(status),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            if (status == 'expired')
-                                              TextButton.icon(
-                                                onPressed: () => _unexpireSos(sos['_id']),
-                                                icon: const Icon(Icons.restore, size: 16),
-                                                label: const Text("Undo Expired"),
-                                                style: TextButton.styleFrom(foregroundColor: Colors.blue),
+                                              const Divider(height: 18),
+
+                                              // Requester
+                                              _infoRow(Icons.person_outline, "Requested by",
+                                                  requester != null ? (requester['Name'] ?? 'Unknown') : 'Unknown'),
+                                              if (requester != null && requester['mobile'] != null)
+                                                _infoRow(Icons.phone_outlined, "Contact", requester['mobile']),
+
+                                              // Location
+                                              if (sos['latitude'] != null)
+                                                _infoRow(Icons.location_on_outlined, "Location",
+                                                    "Lat: ${sos['latitude']}, Lng: ${sos['longitude']}"),
+
+                                              // Time
+                                              _infoRow(Icons.access_time, "Time", time),
+
+                                              // Volunteer
+                                              _infoRow(
+                                                Icons.volunteer_activism,
+                                                "Volunteer",
+                                                volunteer != null
+                                                    ? "${volunteer['Name']} (${volunteer['mobile'] ?? 'N/A'})"
+                                                    : 'Not assigned yet',
+                                                color: volunteer != null ? Colors.green.shade700 : Colors.grey,
                                               ),
-                                          ],
-                                        )
-                                      ]
-                                    ],
-                                  ),
-                                ),
+
+                                              // Actions
+                                              if (status != 'resolved' && status != 'in progress') ...[
+                                                const SizedBox(height: 10),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    if (status != 'expired')
+                                                      TextButton.icon(
+                                                        onPressed: () => _expireSos(sos['_id']),
+                                                        icon: const Icon(Icons.block, size: 16),
+                                                        label: const Text("Mark Expired"),
+                                                        style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                                                      ),
+                                                    if (status == 'expired')
+                                                      TextButton.icon(
+                                                        onPressed: () => _unexpireSos(sos['_id']),
+                                                        icon: const Icon(Icons.restore, size: 16),
+                                                        label: const Text("Undo Expired"),
+                                                        style: TextButton.styleFrom(foregroundColor: Colors.blue),
+                                                      ),
+                                                  ],
+                                                )
+                                              ]
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ];
+                                }).toList(),
                               );
                             },
                           ),
@@ -253,20 +299,39 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
     );
   }
 
-  Widget _statChip(String label, int count, Color color) {
+  Widget _statChip(String label, int count, Color color, String filterKey) {
+    final bool isSelected = _selectedFilter == filterKey;
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: color.withOpacity(0.4)),
-        ),
-        child: Column(
-          children: [
-            Text("$count", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: color)),
-            Text(label, style: TextStyle(fontSize: 12, color: color)),
-          ],
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedFilter = isSelected ? null : filterKey;
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? color.withOpacity(0.2) : color.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected ? color : color.withOpacity(0.3),
+              width: isSelected ? 2.0 : 1.0,
+            ),
+          ),
+          child: Column(
+            children: [
+              Text("$count", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: color)),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: color,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -292,10 +357,29 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
     );
   }
 
-  String _formatTime(String isoString) {
+  String _formatDate(String isoString) {
+    if (isoString.isEmpty) return 'Unknown Date';
     try {
       final dt = DateTime.parse(isoString).toLocal();
-      return "${dt.day}/${dt.month}/${dt.year}  ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
+      final now = DateTime.now();
+      if (dt.year == now.year && dt.month == now.month && dt.day == now.day) {
+        return 'Today';
+      }
+      return "${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}";
+    } catch (_) {
+      return 'Unknown Date';
+    }
+  }
+
+  String _formatTime(String isoString) {
+    if (isoString.isEmpty) return 'N/A';
+    try {
+      final dt = DateTime.parse(isoString).toLocal();
+      int hour = dt.hour;
+      String amPm = hour >= 12 ? 'PM' : 'AM';
+      if (hour > 12) hour -= 12;
+      if (hour == 0) hour = 12;
+      return "${hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')} $amPm";
     } catch (_) {
       return isoString;
     }
