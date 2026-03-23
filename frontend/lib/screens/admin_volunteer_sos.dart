@@ -149,7 +149,6 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
                         final status = s['status'] ?? 'pending';
                         bool matchesStatus = true;
                         
-                        // NEW LOGIC for expiration check (from updated feature)
                         final isExpired = s['isManualExpired'] == true || (s['isManualUnexpired'] != true && status == 'expired');
 
                         if (_selectedFilter == 0) matchesStatus = status == 'pending';
@@ -167,7 +166,6 @@ class _AdminVolunteerSosState extends State<AdminVolunteerSos> {
                         return matchesStatus && matchesSearch;
                       }).toList();
 
-                      // Sort descending by timestamp
                       filteredList.sort((a, b) {
                         String tA = (a['timestamp'] ?? a['createdAt'] ?? '').toString();
                         String tB = (b['timestamp'] ?? b['createdAt'] ?? '').toString();
