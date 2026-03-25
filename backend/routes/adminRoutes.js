@@ -3,6 +3,7 @@ import User from "../models/users.js";
 import CampManager from "../models/CampManager.js";
 import Disaster from "../models/Disaster.js";
 import SOS from "../models/sos.js";
+import VolunteerTask from "../models/VolunteerTask.js";
 import DonationRecord from "../models/DonationRecord.js";
 import MoneyDonation from "../models/MoneyDonation.js";
 import { sendCampCredentials } from "../services/emailService.js";
@@ -353,6 +354,9 @@ router.post("/sos/:id/unexpire", async (req, res) => {
         sos.isManualExpired = false;
         sos.isManualUnexpired = true;
         await sos.save();
+
+        // Delete associated volunteer task so it resets to pending
+        await VolunteerTask.deleteOne({ sosId: id });
 
         res.json({ message: "SOS expiration undone", sos });
     } catch (error) {
